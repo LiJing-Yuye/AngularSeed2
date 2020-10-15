@@ -1,0 +1,212 @@
+<div id="SecurityTab" ng-show="deviceList.length > 0" ng-class="{'high-risk-router': deviceListByKey[routerIP].vuln.High.length > 0,
+        'low-risk-router' : deviceListByKey[routerIP].vuln.Low.length > 0 && deviceListByKey[routerIP].vuln.High.length == 0,
+        'no-risk-router'  : deviceListByKey[routerIP].vuln.Low.length == 0 && deviceListByKey[routerIP].vuln.High.length == 0
+        }">
+    <div class="se-security-tab" ng-class="{'showStartAnimation': showStartAnimation,
+                                            'showEndAnimation': showEndAnimation}">
+        <div class="outside-network"></div>
+        <div class="net-router-line"></div>
+        <div class="se-page-title bold-font">{{ i18n.StatusTitle[curFamilySecurity] }}</div>
+        <div class="se-page-description">{{ i18n.StatusDescription[curFamilySecurity] }}</div>
+
+        <div class="se-home-router" ng-class="{'high-risk-device': deviceListByKey[routerIP].vuln.High.length > 0,
+                'low-risk-device' : deviceListByKey[routerIP].vuln.Low.length > 0 && deviceListByKey[routerIP].vuln.High.length == 0,
+                'no-risk-device'  : deviceListByKey[routerIP].vuln.Low.length == 0 && deviceListByKey[routerIP].vuln.High.length == 0,
+                'opacity-devices-list': curHoverDevice }">
+            <div class="se-router-border" ng-class="{'se-diamond-border': isHoverDiamond }"></div>
+            <div class="se-router-new" ng-show="deviceListByKey[routerIP].newInfo && !isHoverRouter"></div>
+            <div class="se-router-img">
+                <div class="router-risk-icon"></div>
+                <div class="router-view" ng-click="viewDetail(routerIP)">{{ i18n.ViewDetails }}</div>
+
+                <div class="se-deice-brief" id="RouterHoverModal">
+                    <div class="se-up-part">
+                        <div class="row-layout">
+                            <div class="se-friendly-name bold-font">
+                                {{ deviceListByKey[routerIP].deviceFriendlyName }}
+                            </div>
+                            <div ng-show="curShowNetwork.isCurrentNetwork"
+                                ng-class="{'online-device' : deviceListByKey[routerIP].deviceState != DEVICE_STATUS.OFFLINE,
+                                            'offline-device': deviceListByKey[routerIP].deviceState == DEVICE_STATUS.OFFLINE}">
+                                <div class="status-tag">
+                                    <div class="status-dot"></div>
+                                    <span
+                                        ng-show="deviceListByKey[routerIP].deviceState == DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOffline }}</span>
+                                    <span
+                                        ng-show="deviceListByKey[routerIP].deviceState != DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOnline }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="se-device-info">
+                            <div class="se-device-bd">
+                                <span ng-show="deviceListByKey[routerIP].deviceBrand">
+                                    {{ deviceListByKey[routerIP].deviceBrand }}&nbsp;&nbsp;</span>
+                                <span ng-show="deviceListByKey[routerIP].deviceModel">
+                                    {{ deviceListByKey[routerIP].deviceModel }}&nbsp;&nbsp;</span>
+                            </div>
+
+                            <div>{{ i18n.IP }} {{ deviceListByKey[routerIP].deviceIP }}&nbsp;&nbsp;</div>
+                            <div>{{ i18n.Mac }} {{ deviceListByKey[routerIP].deviceMac }}</div>
+                        </div>
+                    </div>
+
+                    <div class="se-down-part" ng-show="deviceListByKey[routerIP].IscScanFinished">
+                        <div class="se-risk-number" ng-show="deviceListByKey[routerIP].RiskCount == 1">
+                            {{ deviceListByKey[routerIP].RiskCount }} {{ i18n.ResultPageRisk }}</div>
+                        <div class="se-risk-number" ng-show="deviceListByKey[routerIP].RiskCount > 1">
+                            {{ deviceListByKey[routerIP].RiskCount }} {{ i18n.ResultPageRisks }}</div>
+                        <div class="se-risk-info">
+                            {{ i18n.PotentialRiskTip.Gateway[PotentialRiskTipPriorityDefine[deviceListByKey[routerIP].PotentialRiskTipPriority]] }}
+                        </div>
+                        <div class="se-view-detail" ng-click="viewDetail(routerIP)">{{ i18n.ViewDetails }} ></div>
+                    </div>
+                    <div class="se-down-part" ng-show="!deviceListByKey[routerIP].IscScanFinished">
+                        <div></div>
+                        <div class="se-device-checking">{{ i18n.DeviceChecking }}</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="se-device-name-with-offline" ng-hide="isHoverRouter">
+                <div ng-show="curShowNetwork.isCurrentNetwork" class="se-online-status"
+                    ng-class="{'se-offline-status': device_item.deviceState == 1}">
+                </div>
+                <div class="se-router-name">{{ deviceListByKey[routerIP].deviceFriendlyName }}</div>
+            </div>
+        </div>
+
+        <div class="se-diamond-hover" ng-class="{'se-diamond-hover-show': isHoverDiamond}"
+            ng-show="curISCStatus == STATUS_ENUM.ISC_FINISHED">
+            <div class="se-diamond-box">
+                <div class="se-pro-diamond" id="DiamondHoverModal">
+                    <div class="se-get-now" ng-click="openBrowserByUrl('PromotionBySecurityPage')">
+                        {{ i18n.DiamondPromoteGet }}</div>
+
+                    <img ng-src="{{ i18n.imagePromoteDiamond }}" class="promote-diamond-img">
+                    <div class="learn-more" ng-click="openBrowserByUrl('PromotionBySecurityPage')">
+                        {{ i18n.DiamondPromoteLearn }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="se-device-counter" ng-class="{'se-device-counter-hover': curShowNetwork.isCurrentNetwork }">
+            <div class="se-counter-detail">
+                <div>
+                    <div class="se-online-counter online-device">
+                        <div class="status-dot"></div>
+                        {{ onlineDeviceCount }} {{ i18n.ResultPageOnline }}
+                    </div>
+                    <div class="se-placeholder" ></div>
+                    <div class="se-offline-counter offline-device">
+                        <div class="status-dot"></div>
+                        {{ deviceCount - onlineDeviceCount}} {{ i18n.ResultPageOffline }}
+                    </div>
+                </div>
+                <div class="se-connecter"></div>
+            </div>
+            <div class="se-counter-number">
+                {{ deviceCount }} {{ i18n.Devices }}
+            </div>
+        </div>
+
+
+        <div class="se-unknow-device" ng-show="curISCStatus == STATUS_ENUM.ISC_FINISHED" ng-click="ShowUnkonwDevice()">
+            <span class="nohover-show">{{ i18n.SeeUnkownDevice }}</span>
+        </div>
+
+
+        <div class="se-devices-list " ng-class="{'opacity-devices-list': isHoverRouter || isHoverDiamond ,
+                        'scrollbar-dynamic scrollbar-device-map': deviceCount > 9  || locale == 'JA-JP'}">
+            <div ng-repeat="device_item in deviceList | filter: {deviceRole: '!2'} track by $index "
+                on-finish-render-filters
+                ng-class="{'high-risk-device': device_item.vuln.High.length > 0,
+                           'low-risk-device' : device_item.vuln.Low.length > 0 && device_item.vuln.High.length == 0,
+                           'no-risk-device'  : device_item.vuln.Low.length == 0 && device_item.vuln.High.length == 0,
+                           'opacity-devices-list':  curHoverDevice && curHoverDevice.deviceIP != device_item.deviceIP}">
+                <div class="se-device-item" ng-class="{'se-specical-position': $index % 9 === 0}" id="{{ $index }}">
+                    <div ng-class="{'hover-border': isHoverRouter || isHoverDiamond ,
+                                    'new-device': device_item.newInfo && !isHoverRouter && !isHoverDiamond,
+                                    'hover-border-with-new': device_item.newInfo && (isHoverRouter || isHoverDiamond)
+                                    }">
+                        <div class="se-device-border" id="{{ device_item.deviceIP }}">
+                            <img class="se-device-img" ng-src="{{ device_item.deviceIcon }}">
+                            <div class="device-view" ng-click="viewDetail(device_item.deviceIP)">{{ i18n.ViewDetails }}
+                            </div>
+                            <div class="device-risk-icon"></div>
+
+                            <div class="se-deice-brief" id="DeviceHoverModal" ng-class="{
+                                            'se-deice-brief-0': $index % 9 === 0, 
+                                            'se-deice-brief-1': $index % 9 === 1, 
+                                            'se-deice-brief-2': $index % 9 === 2, 
+                                            'se-deice-brief-3': $index % 9 === 3,
+                                            'se-deice-brief-4': $index % 9 === 4,
+                                            'se-deice-brief-5': $index % 9 === 5,
+                                            'se-deice-brief-6': $index % 9 === 6,
+                                            'se-deice-brief-7': $index % 9 === 7,
+                                            'se-deice-brief-8': $index % 9 === 8,
+                                        }">
+                                <div class="se-up-part">
+                                    <div class="row-layout">
+                                        <div class="se-friendly-name bold-font">
+                                            {{ curHoverDevice.deviceFriendlyName }}
+                                        </div>
+                                        <div ng-show="curShowNetwork.isCurrentNetwork"
+                                            ng-class="{'online-device' : curHoverDevice.deviceState != DEVICE_STATUS.OFFLINE,
+                                                        'offline-device': curHoverDevice.deviceState == DEVICE_STATUS.OFFLINE}">
+                                            <div class="status-tag">
+                                                <div class="status-dot"></div>
+                                                <span
+                                                    ng-show="curHoverDevice.deviceState == DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOffline }}</span>
+                                                <span
+                                                    ng-show="curHoverDevice.deviceState != DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOnline }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="se-device-info">
+                                        <div class="se-device-bd">
+                                            <span ng-show="curHoverDevice.deviceBrand">
+                                                {{ curHoverDevice.deviceBrand }}&nbsp;&nbsp;</span>
+                                            <span ng-show="curHoverDevice.deviceModel">
+                                                {{ curHoverDevice.deviceModel }}&nbsp;&nbsp;</span>
+                                        </div>
+
+                                        <div>{{ i18n.IP }} {{ curHoverDevice.deviceIP }}&nbsp;&nbsp;</div>
+                                        <div>{{ i18n.Mac }} {{ curHoverDevice.deviceMac }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="se-down-part" ng-show="curHoverDevice.IscScanFinished">
+                                    <div class="se-risk-number" ng-show="curHoverDevice.RiskCount == 1">
+                                        {{ curHoverDevice.RiskCount }} {{ i18n.ResultPageRisk }}</div>
+                                    <div class="se-risk-number" ng-show="curHoverDevice.RiskCount > 1">
+                                        {{ curHoverDevice.RiskCount }} {{ i18n.ResultPageRisks }}</div>
+                                    <div class="se-risk-info">{{ 
+                                        i18n.PotentialRiskTip.NonGateway[PotentialRiskTipPriorityDefine[curHoverDevice.PotentialRiskTipPriority]] 
+                                    }}</div>
+                                    <div class="se-view-detail" ng-click="viewDetail(curHoverDevice.deviceIP)">
+                                        {{ i18n.ViewDetails }} ></div>
+                                </div>
+                                <div class="se-down-part" ng-show="!curHoverDevice.IscScanFinished">
+                                    <div></div>
+                                    <div class="se-device-checking">{{ i18n.DeviceChecking }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="se-device-name-with-online" id="{{ device_item.deviceIP }}name">
+                        <div ng-show="curShowNetwork.isCurrentNetwork" class="se-online-status"
+                            ng-class="{'se-offline-status': device_item.deviceState == 1}">
+                        </div>
+                        <div class="se-device-name">{{ device_item.deviceFriendlyName }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bannerAD" ng-click="openBrowserByUrl('PromotionByDashboard')">
+                <img ng-src="./Common/img/banner/{{ i18n.homeBanner }}">
+            </div>
+        </div>
+    </div>
+</div>

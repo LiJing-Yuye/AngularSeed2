@@ -1,0 +1,314 @@
+<div ng-show="deviceList.length > 0">
+    <div class="device-list-tab">
+        <div class="device-list scrollbar-dynamic" id="device-list-div">
+            <div ng-repeat="device in deviceList track by $index" class='device-info'
+                ng-class="{'background-active': device.selected}" id="{{ device.deviceMac }}"
+                ng-click="ClickDevice($index)" on-finish-render-filters>
+                <div class="placeholder-new-info">
+                    <div class="newInfo-icon" ng-show="device.newInfo"></div>
+                </div>
+
+                <div class="category-icon" ng-style="{'background-image':'url('+ device.deviceIcon +')'}">
+                    <div ng-show="curShowNetwork.isCurrentNetwork">
+                        <div class="online-icon" ng-show="device.deviceState != DEVICE_STATUS.OFFLINE"></div>
+                        <div class="offline-icon" ng-show="device.deviceState == DEVICE_STATUS.OFFLINE"></div>
+                    </div>
+                </div>
+                <div class="device-name">
+                    <div class="left-device-name"
+                        ng-class="{'word-active': device.selected, 'Semibold-font': device.selected}">
+                        {{ device.deviceFriendlyName }}</div>
+                    <div class="left-device-ip"
+                        ng-class="{'word-active': device.selected, 'Semibold-font': device.selected}">
+                        <span
+                            ng-show="device.deviceRole == DEVICE_ROLLE.DEVICE_ROLE_LOCAL">{{ i18n.ResultPageThisDevice }}</span>
+                        <span
+                            ng-show="device.deviceRole == DEVICE_ROLLE.DEVICE_ROLE_GATEWAY">{{ i18n.ResultPageHomeRouter }}</span>
+                        <span
+                            ng-show="device.deviceRole == DEVICE_ROLLE.DEVICE_ROLE_NORMAL">{{ device.deviceIP }}</span>
+                    </div>
+
+                </div>
+                <div class="placeholder-div">
+                    <div ng-show="device.DrScanFinished">
+                        <div class="vunl-high-icon" ng-show="device.vuln.High.length > 0"></div>
+                        <div class="vunl-low-icon"
+                            ng-show="(device.vuln.High.length == 0) && (device.vuln.Low.length > 0)"></div>
+                    </div>
+
+                    <div class="scaning-icon" ng-if="platform == 'Windows'"
+                        ng-show="!device.DrScanFinished && curDRStatus != STATUS_ENUM.DR_FINISHED"></div>
+                    <div class="scaning-icon" ng-if="platform != 'Windows'" ng-show="!device.IscScanFinished"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-detail" ng-class='{
+            "cur-device-high-risk": curDevice.vuln.High.length > 0,
+            "cur-device-low-risk": (curDevice.vuln.High.length == 0) && (curDevice.vuln.Low.length > 0)}'>
+            <div class="device-recognized-result">
+                <div class="top-line">
+                    <div class="name-part row-layout">
+                        <div class="friendly-name bold-font">
+                            <div>
+                                <span id="scroll-text">
+                                    {{ curDevice.deviceFriendlyName }}
+                                </span>
+                            </div>
+                        </div>
+                        <div ng-show="curShowNetwork.isCurrentNetwork" ng-class="{'online-device' : curDevice.deviceState != DEVICE_STATUS.OFFLINE,
+                                        'offline-device': curDevice.deviceState == DEVICE_STATUS.OFFLINE}">
+                            <div class="status-tag">
+                                <div class="status-dot"></div>
+                                <span
+                                    ng-show="curDevice.deviceState == DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOffline }}</span>
+                                <span
+                                    ng-show="curDevice.deviceState != DEVICE_STATUS.OFFLINE">{{ i18n.ResultPageOnline }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extra-info"
+                        ng-show="curShowNetwork.isCurrentNetwork && curDevice.deviceState != DEVICE_STATUS.OFFLINE">
+                        <div class="last-online-time" ng-show="curDevice.lastOnlineTime.getTime() != 0">
+                            {{ curDevice.lastOnlineTime | date : 'yyyy/MM/dd HH:mm'}}</div>
+                        <div class="extra-info-bottom">
+                            <div class="open-console bold-font" ng-show="curDevice.IsShowOpenConsole"
+                                ng-click="openBrowserByUrl('open_console', 'http://' + curDevice.deviceIP + ':80')">
+                                <img src="./Common/img/ico_sharearrow@2x.png" class="icon-16 margin-right-4">
+                                <span ng-show="curDevice.IsShowOpenConsole">{{ i18n.ResultPageOpenConsole }}</span>
+                            </div>
+                            <div class="edit-info bold-font" ng-click="editDeviceInfo()">
+                                <img src="./Common/img/ico_edit@2x.png" class="icon-16 margin-right-4">
+                                {{ i18n.ResultPageEdit }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extra-info"
+                        ng-show="!curShowNetwork.isCurrentNetwork || curDevice.deviceState == DEVICE_STATUS.OFFLINE">
+                        <div class="last-online-time" ng-show="curDevice.lastOnlineTime.getTime() != 0">
+                            {{ curDevice.lastOnlineTime | date : 'yyyy/MM/dd HH:mm'}}</div>
+                        <div class="extra-info-bottom">
+                            <div class="forget-info bold-font" ng-click="ForgetDevice()">
+                                <img src="./Common/img/ico_remove@2x.png" class="icon-16 margin-right-4">
+                                {{ i18n.ForgetThisDevice }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-line">
+                    <div class="key">{{ i18n.ResultPageIPAddress }}</div>
+                    <div class="value bold-font" ng-click="ClickWording(i18n.ResultPageIPAddress)">
+                        {{ curDevice.deviceIP }}</div>
+
+                    <div class="key margin-left-46">{{ i18n.ResultPageMacAddress }}</div>
+                    <div class="value bold-font" ng-click="ClickWording(i18n.ResultPageMacAddress)">
+                        {{ curDevice.deviceMac }}</div>
+
+                    <div class="key margin-left-46">
+                        <span ng-show="curDevice.deviceBrand">{{ i18n.ResultPageBrand }}</span>
+                        <span ng-show="curDevice.deviceBrand && curDevice.deviceModel"> / </span>
+                        <span ng-show="curDevice.deviceModel">{{ i18n.ResultPageModel }}</span>
+                    </div>
+                    <div class="value bold-font" id="model-brand-info">
+                        <div id="model-brand-text">
+                            <span ng-show="curDevice.deviceBrand"
+                                ng-click="ClickWording(i18n.ResultPageBrand)">{{ curDevice.deviceBrand }}</span>
+                            <span ng-show="curDevice.deviceBrand && curDevice.deviceModel">/</span>
+                            <span ng-show="curDevice.deviceModel"
+                                ng-click="ClickWording(i18n.ResultPageModel)">{{ curDevice.deviceModel }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="img-divider-line">
+                </div>
+            </div>
+
+            <div class="vulnerability-result">
+                <div class="vulnerability-left">
+                    <div ng-show="!curDevice.IscScanFinished">
+                        <div class="risk-title">
+                            <span>{{ i18n.ResultPageRisks }}</span>
+                        </div>
+                        <div class="scaning-list">
+                            {{ i18n.ResultPageChecking }}
+                            <div class="isc-scaning-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="risk"
+                        ng-class='{"selected-risk": curDevice.curShowVuln.Type == "High" || curDevice.curShowVuln.Type == "Low"}'>
+                        <div class="risk-title" ng-show="curDevice.RiskCount > 0">
+                            {{ curDevice.RiskCount }}
+                            <span ng-show="curDevice.RiskCount == 1">{{ i18n.ResultPageRisk }}</span>
+                            <span ng-show="curDevice.RiskCount > 1">{{ i18n.ResultPageRisks }}</span>
+                        </div>
+
+                        <div class="cur-vuln-high-risk">
+                            <div ng-repeat="highRisk in curDevice.vuln.High" class="risk-list" ng-class='{"risk-list-active": curDevice.curShowVuln.Title == highRisk.Title, 
+                                        "bold-font": curDevice.curShowVuln.Title == highRisk.Title}'
+                                ng-click="ClickVuln(highRisk)">
+                                <div class="indicator"></div>
+                                {{ highRisk.Title }}
+                            </div>
+                        </div>
+
+                        <div class="cur-vuln-low-risk">
+                            <div ng-repeat="lowRisk in curDevice.vuln.Low" class="risk-list cur-vuln-high-risk"
+                                ng-class='{"risk-list-active": curDevice.curShowVuln.Title == lowRisk.Title, 
+                                        "bold-font": curDevice.curShowVuln.Title == lowRisk.Title}'
+                                ng-click="ClickVuln(lowRisk)">
+                                <div class="indicator"></div>
+                                {{ lowRisk.Title}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <div class="risk-title"
+                            ng-class='{"selected-recommendation": curDevice.curShowVuln.Type == "Recommendation"}'>
+                            {{ i18n.ResultPageRecommendation }}
+                        </div>
+
+                        <div ng-repeat="recommendation in curDevice.vuln.Recommendation" class="risk-list" ng-class='{"risk-list-active": curDevice.curShowVuln.Title == recommendation.Title, 
+                                        "bold-font": curDevice.curShowVuln.Title == recommendation.Title}'
+                            ng-click="ClickVuln(recommendation)">
+                            <div class="indicator"></div>
+                            {{ recommendation.Title}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vulnerability-right scrollbar-dynamic scrollbar-vuln"
+                    data-jquery-scrollbar="jqueryScrollbarOptions">
+                    <div ng-repeat="(Type, Risks) in curDevice.vuln">
+                        <div ng-repeat="Risk in Risks" class="one-vulner-div" id="{{ Risk.Title}}">
+                            <div ng-show="(Risk.Title.indexOf(i18n.RecognizeDeviceTitle) == -1)">
+                                <img ng-src="./Common/img/vun_icon/{{Risk.Image}}" class="vun-img">
+                            </div>
+                            <div class="recognize-device"
+                                ng-show="(Risk.Title.indexOf(i18n.RecognizeDeviceTitle) != -1)">
+                                <img class="device-inner-icon" ng-src="{{ curDevice.deviceIcon }}"></img>
+                            </div>
+
+                            <div ng-show="(Risk.Title.indexOf(i18n.MoreTipsRecommendation.MoreTipsTitle) != -1)">
+                                {{ i18n.MoreTipsRecommendation.MoreTipsShortName }}
+                            </div>
+
+                            <div ng-repeat="detail in Risk.Detail" class="vulner-detail-div"
+                                ng-show="Risk.Title.indexOf(i18n.OpenPortTitle) == -1">
+                                <div class="vulnerability-shortname bold-font">{{ detail.ShortName }}
+                                    <div class="high-tag" ng-show="Risk.Type == 'High'">-
+                                        {{ i18n.ResultPageHighRiskLable }}</div>
+                                    <div class="low-tag" ng-show="Risk.Type == 'Low'">-
+                                        {{ i18n.ResultPageLowRiskLable }}</div>
+                                </div>
+                                <div class="vulnerability-affect">{{ detail.Description }}</div>
+
+                                <div class="how-to-protect-device">
+                                    <dev class="protect-device bold-font"
+                                        ng-click="openBrowserByUrl('vulnerability', detail.Solution)">{{ detail.How }}
+                                    </dev>
+                                    <div class="ico-support" ng-click="openBrowserByUrl('airsupportByResultPageISC')"
+                                        ng-show="isShowAirSupport"></div>
+                                </div>
+                            </div>
+
+                            <div class="vulner-detail-div" ng-show="Risk.Title.indexOf(i18n.OpenPortTitle) != -1">
+                                <div class="row-layout">
+                                    <div class="open-port-key bold-font">{{ i18n.ResultPageOpenPort }}</div>
+                                    <div class="open-port-value bold-font">{{ i18n.ResultPageOpenPortProtocol }}</div>
+                                </div>
+                                <div class="open-port-line"></div>
+                                <div ng-repeat="detail in Risk.Detail" class="row-layout">
+                                    <div class="open-port-key">{{ detail.Port }}</div>
+                                    <div class="open-port-value">{{ detail.Protocol }}</div>
+                                </div>
+                                <div class="vulnerability-affect">{{ Risk.Detail[0].Description }}</div>
+
+                                <div class="how-to-protect-device">
+                                    <dev class="protect-device bold-font"
+                                        ng-click="openBrowserByUrl('vulnerability', Risk.Detail[0].Solution)">
+                                        {{ Risk.Detail[0].How }}</dev>
+                                    <div class="ico-support" ng-click="openBrowserByUrl('airsupportByResultPageISC')"
+                                        ng-show="isShowAirSupport"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ForgetModal" tabindex="-1" role="dialog" aria-hidden="false" data-keyboard="false">
+        <div class="modal-center">
+            <div class="modal-dialog">
+                <div class="modal-content error-modal">
+                    <h4 class="edit-modal-title error-modal-title">{{ i18n.ForgetModalTitle }}</h4>
+                    <div class="error-modal-message">{{ i18n.ForgetModalContent }}</div>
+
+                    <div class="row-btn-group">
+                        <div class="main-btn" ng-click="ForgetDeviceOK('ErrorModal')">{{ i18n.ForgetModalOK }}</div>
+                        <div class="second-btn" ng-click="CloseModal('ForgetModal')">{{ i18n.ForgetModalCancel }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content edit-modal">
+                <h4 class="edit-modal-title">{{ i18n.EditModalTitle }}</h4>
+                <div class="edit-modal-part">
+                    <div class="edit-modal-example">
+                        <div class="edit-modal-key">{{ i18n.EditModalDeviceImage }}</div>
+                        <div class="edit-modal-pic">
+                            <img ng-src="" class="up-part category-choose" id="cate-icon">
+                            <img src="./Common/img/ico_dropdialog_arrow_top@2x.png" class="edit-modal-arrow">
+                            <div class="edit-modal-line"></div>
+                            <div class="icon-container">
+                                <div class="down-part scrollbar-dynamic scrollbar-edit">
+                                    <div ng-repeat="key in CategoryClassList" ng-click="SelectIcon(key)"
+                                        class="edit-icon-div"
+                                        ng-class="{'category-choose-small': editedInfo['category_class'] == key}">
+                                        <img ng-src="./Common/img/category_icon_v2/{{CategoryClassIconMappingUI_V2[key]}}"
+                                            class="edit-modal-category">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="edit-modal-edit">
+                        <div class="edit-modal-key">{{ i18n.EditModalDisplayName }}</div>
+                        <input class="edit-modal-name-input" ng-model="editedInfo.friendly_name">
+                        <div class="edit-modal-key">{{ i18n.EditModalBrand }}</div>
+                        <input class="edit-modal-name-input" ng-model="editedInfo.device_brand">
+                        <div class="edit-modal-key">{{ i18n.EditModalModel }}</div>
+                        <input class="edit-modal-name-input" ng-model="editedInfo.device_model">
+                    </div>
+                </div>
+
+                <div class="row-btn-group">
+                    <div class="main-btn" ng-click="EditSave()">{{ i18n.EditModalSave }}</div>
+                    <div class="second-btn" ng-click="EditCancel()">{{ i18n.EditModalCancel }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scan-over-tip hide" id="scan-over-tip">
+        <div class="black-arrow"></div>
+        <div class="title-bar">
+            <div class="title">{{ i18n.ScanOver }}</div>
+            <div class="close" ng-click="closeTip()"></div>
+        </div>
+        <div class="view" ng-click="viewResult()">{{ i18n.ViewResult }}</div>
+    </div>
+</div>

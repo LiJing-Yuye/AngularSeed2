@@ -1,27 +1,26 @@
-'use strict';
+'use strict'
 // Modules
-const path = require('path');
-var APP_PATH = path.resolve(__dirname, 'src');
-const webpack = require('webpack');
-const helpers = require('./webpack/helpers');
-const autoprefixer = require('autoprefixer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-
+const path = require('path')
+var APP_PATH = path.resolve(__dirname, 'src')
+const webpack = require('webpack')
+const helpers = require('./webpack/helpers')
+const autoprefixer = require('autoprefixer')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // set the environment by npm lifecycle event , `npm run build` npm_lifecycle_event is build
-const ENV = process.env.npm_lifecycle_event;
-const isTest = ENV === 'test' || ENV === 'test-watch';
-const isProd = ENV === 'build';
+const ENV = process.env.npm_lifecycle_event
+const isTest = ENV === 'test' || ENV === 'test-watch'
+const isProd = ENV === 'build'
 
-module.exports = function () {
+module.exports = (function () {
     const config = {
         context: helpers.root('./src'),
 
         entry: {
-            'vendor': ['angular', 'angular-ui-router'],
-            'app': './app.js',
+            vendor: ['angular', 'angular-ui-router'],
+            app: './app.js'
         },
         output: {
             path: helpers.root('./dist'),
@@ -35,14 +34,12 @@ module.exports = function () {
          * See: http://webpack.github.io/docs/configuration.html#module
          */
         module: {
-
             /*
              * An array of applied pre and post loaders.
              *
              * See: http://webpack.github.io/docs/configuration.html#module-preloaders-module-postloaders
              */
             preLoaders: [
-
                 /*
                  * Source map loader support for *.js files
                  * Extracts SourceMaps for source files that as added as sourceMappingURL comment.
@@ -56,10 +53,8 @@ module.exports = function () {
                         // these packages have problems with their sourcemaps
                         helpers.root('node_modules/angular'),
                         helpers.root('node_modules/angular-ui-router')
-
                     ]
                 }
-
             ],
 
             /*
@@ -75,7 +70,9 @@ module.exports = function () {
                 // Reference: https://github.com/babel/babel-loader
                 // Compiles ES6 and ES7 into ES5 code
                 {
-                    test: /\.js$/, loaders: ['babel', 'eslint-loader'], exclude: /node_modules/
+                    test: /\.js$/,
+                    loaders: ['babel', 'eslint-loader'],
+                    exclude: /node_modules/
                 },
                 /*
                  * Json loader support for *.json files.
@@ -119,7 +116,10 @@ module.exports = function () {
                 // HTML LOADER
                 // Reference: https://github.com/webpack/html-loader
                 // Allow loading html through js
-                {test: /\.html$/, loader: 'html?root=/&attrs=img:src img:data-src link:href'},
+                {
+                    test: /\.html$/,
+                    loader: 'html?root=/&attrs=img:src img:data-src link:href'
+                },
 
                 // FILE LOADER
                 // Reference: https://github.com/webpack/file-loader
@@ -127,9 +127,12 @@ module.exports = function () {
                 {
                     test: /\.(png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/i,
                     loader: 'file?name=images/[name].[ext]?[hash]'
-                },
+                }
+                // {
+                //     test: /\.css$/,
+                //     loader: 'css-loader'
+                // }
             ]
-
         },
 
         /**
@@ -143,7 +146,10 @@ module.exports = function () {
                 name: 'commons.chunk',
                 chunks: ['app']
             }),
-            new webpack.optimize.CommonsChunkPlugin('vendor', isProd ? 'vendor.[hash:8].js' : 'vendor.bundle.js'),
+            new webpack.optimize.CommonsChunkPlugin(
+                'vendor',
+                isProd ? 'vendor.[hash:8].js' : 'vendor.bundle.js'
+            ),
             // new webpack.DllPlugin({
             //     path   : 'manifest.json',
             //     name   : "[name]_[hash:8]",
@@ -166,7 +172,7 @@ module.exports = function () {
             }),
             // Reference: https://github.com/webpack/extract-text-webpack-plugin
             // Extract css files
-            new ExtractTextPlugin(isProd ? '[name].[hash:8].css' : '[name].css'),
+            new ExtractTextPlugin(isProd ? '[name].[hash:8].css' : '[name].css')
             //new RenamePlugin()
         ],
 
@@ -193,7 +199,7 @@ module.exports = function () {
             // Server port
             colors: true,
             historyApiFallback: true,
-            port: 7070
+            port: 7071
         },
         resolve: {
             alias: {
@@ -204,7 +210,7 @@ module.exports = function () {
                 _server: path.resolve(APP_PATH, 'server')
             }
         }
-    };
+    }
 
     if (isProd) {
         config.plugins.push(
@@ -219,18 +225,16 @@ module.exports = function () {
             // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
             // Minify all javascript, switch loaders to minimizing mode
             new webpack.optimize.UglifyJsPlugin()
-
-        );
+        )
     }
 
     if (isProd) {
         //config.devtool = 'source-map';
     } else {
-        config.devtool = 'source-map';
+        config.devtool = 'source-map'
     }
     // add debug messages
-    config.debug = !isProd || !isTest;
+    config.debug = !isProd || !isTest
 
-    return config;
-}();
-
+    return config
+})()
