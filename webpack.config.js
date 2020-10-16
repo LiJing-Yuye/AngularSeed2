@@ -69,6 +69,10 @@ module.exports = (function () {
                 // JS LOADER
                 // Reference: https://github.com/babel/babel-loader
                 // Compiles ES6 and ES7 into ES5 code
+                // {
+                //     test: require.resolve('jquery'),
+                //     loader: 'expose?jQuery!expose?$'
+                // },
                 {
                     test: /\.js$/,
                     loaders: ['babel', 'eslint-loader'],

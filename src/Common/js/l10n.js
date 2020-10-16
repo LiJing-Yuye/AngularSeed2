@@ -1,5 +1,5 @@
-
 /* eslint-disable */
+import * as $ from 'jquery'
 var wordingJson
 var DeviceListPageHtml
 var SecurityPageHtml
@@ -47,3 +47,5 @@ InitialData()
     }
     SecurityPageHtml = data
 })()
+module.exports.wordingJson = wordingJson
+module.exports.getLang = getLang

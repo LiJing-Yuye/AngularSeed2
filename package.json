@@ -32,10 +32,13 @@
         "angular-route": "^1.5.7",
         "angular-ui-router": "^0.4.2",
         "bootstrap": "^3.3.6",
+        "expose-loader": "^1.0.1",
+        "jquery": "^1.11.1",
         "md5": "^2.1.0",
         "moment": "^2.18.1"
     },
     "devDependencies": {
+        "@types/jquery": "^3.5.3",
         "autoprefixer": "^6.3.7",
         "babel-core": "^6.10.4",
         "babel-loader": "^6.2.4",
