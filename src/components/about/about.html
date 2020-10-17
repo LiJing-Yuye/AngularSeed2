@@ -1,0 +1,37 @@
+<head>
+
+</head>
+<script type="text/javascript" src="../../Common/js/jquery-1.11.1.js"></script>
+
+<body class="about-body" display="relative" onselectstart="return false" ondragstart="return false"
+  oncontextmenu="return false">
+  <div class="about-header" id="head-area">
+    <div class="about-software">{{ i18n.AboutPageTitle }}</div>
+    <div class="about-close" ng-click="Close()">
+      <div></div>
+    </div>
+  </div>
+
+  <div class="about-middle">
+    <div class="about-left-logo"><img src="../../Common/img/AboutPage/about_logo.png" alt=""></div>
+    <div class="about-right-info">
+      <div class="about-product-name">{{ i18n.WholeProductName }}</div>
+      <div class="about-software">{{ i18n.AboutPageVersion }}</div>
+      <div class="about-version">{{ version }}</div>
+      <div class="about-laws">{{ i18n.AboutPageCopyright }}</div>
+
+      <div class="about-licenseAgreement" ng-click="openBrowserByUrl(i18n.LicenseAgreementUrl)">
+        {{ i18n.AboutPageLicense }}</div>
+      <div class="about-privacy" ng-click="openBrowserByUrl(i18n.GDPRPagePolicyURL)">{{ i18n.AboutPagePrivacy }}</div>
+      <div class="about-data-collection" ng-click="openBrowserByUrl(i18n.GDPRPageDCNURL)">{{ i18n.AboutPageCollection }}
+      </div>
+      <div class="about-third-party-license" ng-click="openThirdPartyLicense()">{{ i18n.AboutPageThirdParty }}</div>
+
+    </div>
+  </div>
+
+  <div class="about-foot_left_corner">
+    <img src="../../Common/img/AboutPage/about_footer_left_pic.png" alt="">
+  </div>
+
+</body>

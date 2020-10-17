@@ -20,4 +20,12 @@ export default function routing(
             url: '/install',
             template: '<install></install>'
         })
+        .state('about', {
+            url: '/about',
+            template: '<about></about>'
+        })
+        .state('gdpr', {
+            url: '/gdpr',
+            template: '<gdpr></gdpr>'
+        })
 }

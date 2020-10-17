@@ -569,3 +569,5 @@ function broadcast(funcName, args) {
 
 module.exports.native = native
 module.exports.PLATFORM = PLATFORM
+module.exports.NativeCMD = NativeCMD
+module.exports.updateUIState = updateUIState

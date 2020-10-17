@@ -1,0 +1,51 @@
+<head>
+
+</head>
+<script type="text/javascript" src="../../Common/js/jquery-1.11.1.js"></script>
+
+<body class="gdpr-body" oncontextmenu="return false" ondragstart="return false">
+  <div class="page-title" id="page-title">
+    <div ng-if="platform == 'Windows'">
+      <max-min-area isblack='true'></max-min-area>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="logo-area">
+      <img class="logo-img" ng-src="../../Common/img/{{ i18n.imageAppLogo }}">
+    </div>
+    <div class="text-area">
+      <div class="area-title">{{ i18n.GDPRPageTitle }}</div>
+      <div class="gdpr-content-outer" ng-class='{"gdpr-content-outer-windows": platform == "Windows"}'>
+        <div class="gdpr-content scrollbar-dynamic scrollbar-gdpr">
+          <div>{{ i18n.GDPRPageContent1 }}</div>
+          <div>{{ i18n.GDPRPageContent2 }}</div>
+          <span>{{ i18n.GDPRPageContent3 }}</span>
+
+          <span>{{ i18n.GDPRPageContent4 }}</span>
+          <a href="#" ng-click="openOutBrowser('DCN')">{{ i18n.GDPRPageContent5 }} </a>
+          <span>{{ i18n.GDPRPageContent6 }}</span>
+
+          <span>{{ i18n.GDPRPageContent7 }}</span>
+          <a href="#" ng-click="openOutBrowser('Policy')">{{ i18n.GDPRPageContent8 }}</a>
+          <span>{{ i18n.GDPRPageContent9 }}</span>
+          <div>{{ i18n.GDPRPageContent10 }}</div>
+        </div>
+      </div>
+
+
+
+      <div ng-show="platform == 'Mac'">
+        <div class="gdpr-explain">{{ i18n.GDPRPageExplain }}</div>
+        <div>
+          <div class="checkbox gdpr-checkbox" ng-class="{ 'checkbox-checked':  usageOption }" ng-click='toggleOption()'>
+          </div>
+          <label class='checkbox-lable' ng-click='toggleOption()'>{{ i18n.GDPRPageOptionUsage }}</label>
+        </div>
+      </div>
+
+      <div class="accept-button" ng-click="confirmLicense()">{{ i18n.welcomePageConfirm }}</div>
+    </div>
+  </div>
+
+  <div class="page-footer"></div>
+</body>

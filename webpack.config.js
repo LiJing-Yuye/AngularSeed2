@@ -6,7 +6,7 @@ const webpack = require('webpack')
 const helpers = require('./webpack/helpers')
 const autoprefixer = require('autoprefixer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // set the environment by npm lifecycle event , `npm run build` npm_lifecycle_event is build
@@ -90,17 +90,20 @@ module.exports = (function () {
                 /*
                  * Reference https://github.com/webpack/less-loader
                  */
-                {
-                    test: /\.less$/,
-                    exclude: helpers.root('./src/css/main.less'),
-                    loader: ExtractTextPlugin.extract('css!postcss!less')
-                },
+                // {
+                //     test: /\.less$/,
+                //     exclude: [path.resolve(__dirname, './src/components')],
+                //     loader: ExtractTextPlugin.extract('css!postcss!less')
+                // },
                 //{test: /\.less$/, loader: extractLESS.extract(['css', 'postcss!less'])},
                 //all css required in src/app files will be merged in js files
                 {
                     test: /\.less/,
-                    include: helpers.root('./src/css/main.less'),
-                    loader: 'style!css!postcss!less'
+                    loader: 'style!css!postcss!less',
+                    options: {
+                        modules: true,
+                        localIdentName: '[local]__[name]--[hash:base64:5]'
+                    }
                 },
 
                 /*
@@ -173,10 +176,10 @@ module.exports = (function () {
                 //inject        : 'body',
                 chunks: ['commons.chunk.js', 'vendor'],
                 chunksSortMode: 'dependency'
-            }),
+            })
             // Reference: https://github.com/webpack/extract-text-webpack-plugin
             // Extract css files
-            new ExtractTextPlugin(isProd ? '[name].[hash:8].css' : '[name].css')
+            // new ExtractTextPlugin(isProd ? '[name].[hash:8].css' : '[name].css')
             //new RenamePlugin()
         ],
 

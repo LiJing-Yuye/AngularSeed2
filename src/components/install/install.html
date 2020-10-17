@@ -2,16 +2,9 @@
 
 </head>
 <script type="text/javascript" src="../../Common/js/jquery-1.11.1.js"></script>
-<!--<script type="text/javascript" src="../../Common/js/l10n.js"></script>
-<script type="text/javascript" src="../../Common/js/angular.1.2.32.min.js"></script>
-<script type="text/javascript" src="../../js/definition.js"></script>
-<script type="text/javascript" src="../../js/common.js"></script>
-<script type="text/javascript" src="../../js/bridge.js"></script>
-<script type="text/javascript" src="../../js/customize.js"></script>
-<script type="text/javascript" src="../../Common/Directive/max-min.js"></script> -->
 
-<body ondragstart="return false" oncontextmenu="return false">
-  <div class="page-title" id="page-title">
+<body class="install-body" ondragstart="return false" oncontextmenu="return false">
+  <div class="install-page-title" id="page-title">
     <div ng-if="platform == 'Windows'">
       <max-min-area isblack='true'></max-min-area>
     </div>
@@ -29,13 +22,13 @@
           </div>
         </div>
       </div>
-      <div class="installing-text bold-font"> {{ i18n.installPageInstalling }}</div>
+      <div class="installing-text install-bold-font"> {{ i18n.installPageInstalling }}</div>
     </div>
 
     <div ng-show="isinstallFinish">
       <div class="text-area">
         <img class="complete-img" src="../../Common/img/ico_complete.png">
-        <div class="main-word bold-font">{{ i18n.installPageCompleted }}</div>
+        <div class="main-word install-bold-font">{{ i18n.installPageCompleted }}</div>
         <div class="secondary-word">{{ i18n.installPageMessage }}</div>
         <div class="accept-button" ng-click="StartNow()">{{ i18n.installPageStart }}</div>
       </div>
